@@ -15,6 +15,7 @@ void QuantumOperator::saveMatrix(string name)
     memcpy((void *)(mxGetPr(pArray)), (void *) m_r.memptr(), dim2*sizeof(double));
     memcpy((void *)(mxGetPi(pArray)), (void *) m_i.memptr(), dim2*sizeof(double));
     
+    string DEBUG_PATH="/Users/ylp/Documents/AcademicLife/code/oops/dat/debug/";
     string dbg_filename = DEBUG_PATH + name + ".mat";
     cout << dbg_filename << " is exported for debug! " << endl;
     MATFile *mFile = matOpen(dbg_filename.c_str(), "w");

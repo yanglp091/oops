@@ -275,7 +275,14 @@ vec EnsembleCCE::cluster_evolution(int cce_order, int index)
     
     Hamiltonian hami0 = create_spin_hamiltonian(_center_spin, _state_pair.first, spin_list);
     Hamiltonian hami1 = create_spin_hamiltonian(_center_spin, _state_pair.second, spin_list);
-    
+/*
+    string fn0="hami0_matrix_cce_", fn1="hami1_matrix_cluster", fn="_index_";
+    string str1=to_string(cce_order), str2=to_string(index);
+    fn0+=str1;fn1+=str1;fn0+=fn;fn1+=fn;
+    fn0+=str2;fn1+=str2;
+    hami0.saveMatrix(fn0);
+    hami1.saveMatrix(fn1);
+ */   
     vector<QuantumOperator> left_hm_list = riffle((QuantumOperator) hami0, (QuantumOperator) hami1, _pulse_num);
     vector<QuantumOperator> right_hm_list;
     if (_pulse_num % 2 == 0)

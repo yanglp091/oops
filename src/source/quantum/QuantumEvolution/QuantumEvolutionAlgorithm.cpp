@@ -120,8 +120,10 @@ void PiecewiseFullMatrixMatrixEvolution::perform()
     int op_num=_left_op_list.size();
     for(int j=0; j<op_num; ++j)
     {
+//        cout <<"The matrix of left hami list is "<<endl<<_left_op_list[j].getMatrix()<<endl;
         left_expm_list.push_back( expmat(-1.0*II* _time_segment[j]*dt * _left_op_list[j].getMatrix() ) );
         right_expm_list.push_back( expmat(1.0*II* _time_segment[j]*dt * _right_op_list[j].getMatrix() ) );
+//        cout <<"The expmatrix of left hami list is "<<endl<<left_expm_list[j]<<endl;
     }
 
     expm_list1 = left_expm_list; expm_list2 = right_expm_list;
