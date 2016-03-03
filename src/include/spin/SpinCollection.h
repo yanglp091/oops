@@ -38,14 +38,18 @@ public:
     vector<cSPIN> getSpinList() const {return _spin_list;};
     vector<cSPIN> getSpinList(const cClusterIndex& clst) const;
     mat getCoordinateMat() const;
-    mat& getDistanceMatrix() {return dist_mat;};
+    mat& getDistanceMatrix() {return _dist_mat;};
     sp_mat getConnectionMatrix (double threshold) const;
+    
+    void saveMatrix(string name, imat m) const;
     //@}
 private:
     cSpinSource* _source;
     vector<cSPIN> _spin_list;
 
-    mat dist_mat;
+    mat _dist_mat;
+    
+    
 };
 //}}}
 ////////////////////////////////////////////////////////////////////////////////

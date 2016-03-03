@@ -39,6 +39,7 @@ public:
     size_t getNum() const {return _spin_num;};
     size_t getOrder() const {return _spin_num-1;};
     set< CluserPostion > getSubClstPos() const;
+    vector<size_t> getSubClstIndex() const {return _sub_clst_pos;};
 
     void appendSubClstPos(int pos) const  {_sub_clst_pos.push_back( pos );};
 
@@ -74,6 +75,7 @@ public:
 
     size_t         getMaxOrder() const {return _max_order;};
     CLST_IDX_LIST& get_cluster_index() {return _cluster_index_list;};
+    vector<mat>    get_index_matrix(int order);
 protected:
     size_t        _nspin;
     size_t        _max_order;

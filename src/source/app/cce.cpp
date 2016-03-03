@@ -21,8 +21,8 @@ void CCE::run()
     prepare_bath_state();
     create_spin_clusters();
 
-    run_each_clusters();
-    post_treatment();
+//    run_each_clusters();
+//    post_treatment();
 
 }
 
@@ -52,6 +52,7 @@ void CCE::create_spin_clusters()
         cDepthFirstPathTracing dfpt(c, _max_order);
         _spin_clusters=cSpinCluster(_bath_spins, &dfpt);
         _spin_clusters.make();
+        _spin_clusters.saveMatrix(_bath_spin_filename);
     }
     
     job_distribution();
@@ -200,7 +201,7 @@ void CCE::export_mat_file()
     for(int i=0; i<_max_order; ++i)
     {
         char i_str [10];
-        sprintf(i_str, "%d", i);
+        sprintf(i_str, "%d", i+1 );
         string idx_str = i_str;
         string label = "CCE" + idx_str;
         string label1 = "CCE" + idx_str+"_tilder";
@@ -256,7 +257,7 @@ void EnsembleCCE::set_parameters()
     _max_order             = _cfg.getIntParameter   ("CCE",        "max_order");
     _nTime                 = _cfg.getIntParameter   ("Dynamics",   "nTime");
     _t0                    = _cfg.getDoubleParameter("Dynamics",   "t0"); 
-    _t1                    = _cfg.getDoubleParameter("Dynamics",   "t1"); 
+    _t1                    = _cfg.getDoubleParameter("Dynamics",   "t1");
     _pulse_name            = _cfg.getStringParameter("Condition",  "pulse_name");
     _pulse_num             = _cfg.getIntParameter   ("Condition",  "pulse_number");
 

@@ -142,6 +142,55 @@ vector<cSPIN> cSpinCluster::getCluster(size_t order, size_t index) const
     return _spin_collection.getSpinList(clst);
 }
 
+
+#ifdef HAS_MATLAB
+void cSpinCluster::saveMatrix(string coordname)
+{
+    string _result_filename="Cluster4"+coordname;;
+    MATFile *mFile = matOpen(_result_filename.c_str(), "w");
+    for(int i=0; i<_max_order; ++i)
+    {
+        char i_str [10];
+        sprintf(i_str, "%d", i+1 );
+        string idx_str = i_str;
+        string label = "ClusterIndixMatrixCCE" + idx_str;
+        string label1 = "SubClusterIndixMatrixCCE" + idx_str;
+        vector<mat> idx_matices=_grouping->get_index_matrix(i);
+        mat cluster_idx_mat=idx_matices[0];
+        mat subcluster_idx_mat=idx_matices[1];
+        
+        
+        size_t nClst = cluster_idx_mat.n_rows;
+        size_t max_subcluster_number=subcluster_idx_mat.n_cols;
+        
+        mxArray *pArray = mxCreateDoubleMatrix(nClst,i+1, mxREAL);
+        mxArray *pArray1 = mxCreateDoubleMatrix(nClst,max_subcluster_number, mxREAL);
+        
+        size_t length=nClst*(i+1);
+        size_t length1=nClst*max_subcluster_number;
+        memcpy((void *)(mxGetPr(pArray)), (void *) cluster_idx_mat.memptr(), length*sizeof(double));
+        memcpy((void *)(mxGetPr(pArray1)), (void *) subcluster_idx_mat.memptr(), length1*sizeof(double));
+        
+        matPutVariableAsGlobal(mFile, label.c_str(), pArray);
+        matPutVariableAsGlobal(mFile, label1.c_str(), pArray1);
+        
+        mxDestroyArray(pArray);
+        mxDestroyArray(pArray1);
+    }
+    
+    
+    
+    
+}
+#else
+void cSpinCluster::saveMatrix(string name)
+{
+    cout << "MATLAB not installed." << endl;
+}
+#endif
+
+
+
 ostream&  operator << (ostream& outs, const cSpinCluster& clst)
 {/*{{{*/
 /// Operator << is reloaded to display the cluster index one by one.

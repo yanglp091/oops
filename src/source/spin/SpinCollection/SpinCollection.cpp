@@ -45,12 +45,13 @@ void cSpinCollection::make()
         }
     }
     d =d+d.t();
-    dist_mat=d;
+    _dist_mat=d;
+
 }
 
 sp_mat cSpinCollection::getConnectionMatrix(double threshold) const
-{ 
-    umat u = (dist_mat<=threshold);
+{
+    umat u = (_dist_mat<=threshold);
     sp_mat res( conv_to< mat >::from(u) );
     for(int i=0; i<res.n_rows; ++i) res(i, i)=0;
     return res;

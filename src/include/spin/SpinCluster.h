@@ -8,6 +8,12 @@
 #include "include/spin/SpinCollection.h"
 #include "include/spin/SpinClusterAlgorithm.h"
 
+#ifdef HAS_MATLAB
+#include <mat.h>
+#endif
+
+extern string DEBUG_PATH;
+
 /// \addtogroup SpinList
 /// @{
 
@@ -54,6 +60,8 @@ public:
     vector<umat>  getMPI_Cluster(int worker_id);
     CluserPostion getMPI_ClusterSize(int cce_order, int worker_id) const;
 
+    void saveMatrix(string coordname);
+    
     friend ostream&  operator << (ostream& outs, const cSpinCluster& clst);
 private:
     size_t           _max_order;
