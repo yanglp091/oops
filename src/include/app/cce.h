@@ -43,6 +43,7 @@ protected:
 
     cSPIN            _center_spin;
     cSpinCollection  _bath_spins;
+    int              _loading_clusters;
     cSpinCluster     _my_clusters;
 
     cSpinCluster     _spin_clusters;

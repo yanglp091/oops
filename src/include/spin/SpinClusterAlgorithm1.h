@@ -75,8 +75,7 @@ public:
 
     size_t         getMaxOrder() const {return _max_order;};
     CLST_IDX_LIST& get_cluster_index() {return _cluster_index_list;};
-    mat            get_cluster_index_matrix(int order);
-    mat            get_sub_cluster_index_matrix(int order);
+    vector<mat>    get_index_matrix(int order);
 protected:
     size_t        _nspin;
     size_t        _max_order;
@@ -103,6 +102,7 @@ public:
     virtual ~cDepthFirstPathTracing();
 
     void generate();
+
 private:
     pair<sp_mat, vector<int> >  subgraph_growth(const sp_mat& subgraph, const sp_mat& neighbor, int subgraph_order);
     //sp_mat remove_repeat(sp_mat subgraph, int subgraph_order);
@@ -113,9 +113,4 @@ private:
 /// @}
 /// @}
 /// @}
-
-
-
-
-
 #endif

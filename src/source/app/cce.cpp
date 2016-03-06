@@ -21,8 +21,8 @@ void CCE::run()
     prepare_bath_state();
     create_spin_clusters();
 
-//    run_each_clusters();
-//    post_treatment();
+    run_each_clusters();
+    post_treatment();
 
 }
 
@@ -48,11 +48,30 @@ void CCE::create_spin_clusters()
 {
     if(_my_rank == 0)
     {
-        sp_mat c=_bath_spins.getConnectionMatrix(_cut_off_dist);
-        cDepthFirstPathTracing dfpt(c, _max_order);
-        _spin_clusters=cSpinCluster(_bath_spins, &dfpt);
-        _spin_clusters.make();
-        _spin_clusters.saveMatrix(_bath_spin_filename);
+        if (_loading_clusters)
+        {
+            string cluster_filename= INPUT_PATH + _cfg.getStringParameter("SpinCluster", "cluater_filename");
+//            IndexMatricesRebuilding imr_group(cluster_filename, _max_order);
+//            _spin_clusters=cSpinCluster(_bath_spins, &imr_group);
+            _spin_clusters.make();
+            cout<<"All clusters have been generated."<<endl;
+            for (int i=0;i<_max_order;i++)
+                cout<<"The number of clusters for CCE "<<i+1<<" is "<<_spin_clusters.getClusterNum(i)<<endl;
+        }
+        
+        else
+        {
+            sp_mat c=_bath_spins.getConnectionMatrix(_cut_off_dist);
+            cDepthFirstPathTracing dfpt(c, _max_order);
+            _spin_clusters=cSpinCluster(_bath_spins, &dfpt);
+            _spin_clusters.make();
+            cout<<"All clusters have been generated."<<endl;
+            for (int i=0;i<_max_order;i++)
+                cout<<"The number of clusters for CCE "<<i+1<<" is "<<_spin_clusters.getClusterNum(i)<<endl;
+            
+            _spin_clusters.saveSpinClusterMatrix(_result_filename);
+        }
+
     }
     
     job_distribution();
@@ -196,6 +215,8 @@ void CCE::compuate_final_coherence()
 void CCE::export_mat_file() 
 {/*{{{*/
 #ifdef HAS_MATLAB
+    
+    _result_filename+=".mat";
     cout << "begin post_treatement ... storing cce_data to file: " << _result_filename << endl;
     MATFile *mFile = matOpen(_result_filename.c_str(), "w");
     for(int i=0; i<_max_order; ++i)
@@ -253,6 +274,7 @@ void EnsembleCCE::set_parameters()
     _state_idx1            = _cfg.getIntParameter   ("CenterSpin", "state_index1");
 
     _center_spin_name      = _cfg.getStringParameter("CenterSpin", "name");
+    _loading_clusters      = _cfg.getIntParameter   ("SpinCluster", "LoadingClusterMatrix");
     _cut_off_dist          = _cfg.getDoubleParameter("SpinBath",   "cut_off_dist");
     _max_order             = _cfg.getIntParameter   ("CCE",        "max_order");
     _nTime                 = _cfg.getIntParameter   ("Dynamics",   "nTime");

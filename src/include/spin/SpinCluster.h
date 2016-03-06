@@ -60,7 +60,7 @@ public:
     vector<umat>  getMPI_Cluster(int worker_id);
     CluserPostion getMPI_ClusterSize(int cce_order, int worker_id) const;
 
-    void saveMatrix(string coordname);
+    void saveSpinClusterMatrix(string coordname);
     
     friend ostream&  operator << (ostream& outs, const cSpinCluster& clst);
 private:

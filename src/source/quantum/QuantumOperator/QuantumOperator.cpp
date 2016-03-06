@@ -18,6 +18,7 @@ void QuantumOperator::saveMatrix(string name)
     string dbg_filename = DEBUG_PATH + name + ".mat";
     cout << dbg_filename << " is exported for debug! " << endl;
     MATFile *mFile = matOpen(dbg_filename.c_str(), "w");
+    if (mFile==nullptr)
     {
         cout<<"Error creating file "<<dbg_filename<<endl;
     }

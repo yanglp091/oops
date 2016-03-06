@@ -128,51 +128,88 @@ void cSpinGrouping::subgraph2index(const sp_mat& subgraph, const vector<int> sub
             pos.first->appendSubClstPos( sub_pos_list[i] );
     }
 }
-vector<mat> cSpinGrouping::get_index_matrix(int order)
+
+
+
+mat cSpinGrouping::get_cluster_index_matrix(int order)
 {
     size_t nClst=_cluster_index_list[order].size();
-    vector<mat> index_mat (2);
-
-    int i=0;
-    FIX_ORDER_INDEX_SET clst_set = _cluster_index_list[order];
     
-    size_t max_subcluster_num=2;
-    for (set<cClusterIndex>::iterator pos=clst_set.begin(); pos!=clst_set.end(); ++pos)
+    if (order>0)
     {
-        cClusterIndex vIdx = *pos;
-        vector<size_t> subidx=vIdx.getSubClstIndex();
-        if ( subidx.size()>max_subcluster_num ) max_subcluster_num=subidx.size();
-    }
-    
-    
-    mat clu_id_mat=zeros(nClst, order+1);
-    mat subclu_id_mat=-1*ones(nClst,max_subcluster_num);
-    for(set<cClusterIndex>::iterator pos=clst_set.begin(); pos!=clst_set.end(); ++pos)
-    {
-        cClusterIndex vIdx = *pos;
-        uvec clst_idx = vIdx.getIndex();
-        mat clst_idx1=zeros(1,order+1);
-        for (int j=0;j<order+1;j++)
-            clst_idx1[j]=clst_idx[j];
-        clu_id_mat.row(i)=clst_idx1;
-        
-        vector<size_t> subidx=vIdx.getSubClstIndex();
-        mat subidx1=zeros(1,max_subcluster_num);
-        for (int j=0;j<max_subcluster_num;j++)
+        mat res=zeros(nClst, order+1);
+        int i=0;
+        FIX_ORDER_INDEX_SET clst_set = _cluster_index_list[order];
+        for(set<cClusterIndex>::iterator pos=clst_set.begin(); pos!=clst_set.end(); ++pos)
         {
-            if (j<subidx.size())
-                subidx1[j]=subidx[j];
-            else
-                subidx1[j]=-1;
+            cClusterIndex vIdx = *pos;
+            uvec clst_idx = vIdx.getIndex();
+            mat clst_idx1=zeros(1,order+1);
+            for (int j=0;j<order+1;j++)
+                clst_idx1(0,j)=clst_idx[j];
+
+            res.row(i)=clst_idx1;
+            i++;
+            
         }
-        subclu_id_mat.row(i)=subidx1;
-        i++;
+        
+
+        return res;
     }
-    vector<mat> res; res.push_back(clu_id_mat);res.push_back(subclu_id_mat);
-    return res;
+    else
+    {
+        mat res=zeros(nClst,1);
+        for (int j=0;j<nClst;j++)
+            res(j,0)=j;
+        return res;
+    }
 }
 
-
+mat cSpinGrouping::get_sub_cluster_index_matrix(int order)
+{
+    size_t nClst=_cluster_index_list[order].size();
+    
+    if (order>0)
+    {
+        int i=0;
+        FIX_ORDER_INDEX_SET clst_set = _cluster_index_list[order];
+        
+        size_t max_subcluster_num=2;
+        for (set<cClusterIndex>::iterator pos=clst_set.begin(); pos!=clst_set.end(); ++pos)
+        {
+            cClusterIndex vIdx = *pos;
+            vector<size_t> subidx=vIdx.getSubClstIndex();
+            if ( subidx.size()>max_subcluster_num ) max_subcluster_num=subidx.size();
+        }
+        
+        
+        mat res=-1*ones(nClst,max_subcluster_num);
+        for(set<cClusterIndex>::iterator pos=clst_set.begin(); pos!=clst_set.end(); ++pos)
+        {
+            cClusterIndex vIdx = *pos;
+            uvec clst_idx = vIdx.getIndex();
+            
+            vector<size_t> subidx=vIdx.getSubClstIndex();
+            mat subidx1=zeros(1,max_subcluster_num);
+            for (int j=0;j<max_subcluster_num;j++)
+            {
+                if (j<subidx.size())
+                    subidx1[j]=subidx[j];
+                else
+                    subidx1[j]=-1;
+            }
+            res.row(i)=subidx1;
+            i++;
+        }
+        
+        return res;
+    }
+    else
+    {
+        mat res=-1*ones(nClst,1);
+        return res;
+    }
+}
 
 //}}}
 ////////////////////////////////////////////////////////////////////////////////
@@ -249,6 +286,7 @@ pair<sp_mat, vector<int> >  cDepthFirstPathTracing::subgraph_growth(const sp_mat
     //return res_mat;
     return res;
 }
+
 
 //}}}
 ////////////////////////////////////////////////////////////////////////////////

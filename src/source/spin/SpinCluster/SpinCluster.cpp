@@ -144,10 +144,13 @@ vector<cSPIN> cSpinCluster::getCluster(size_t order, size_t index) const
 
 
 #ifdef HAS_MATLAB
-void cSpinCluster::saveMatrix(string coordname)
+void cSpinCluster::saveSpinClusterMatrix(string filename)
 {
-    string _result_filename="Cluster4"+coordname;;
+    string _result_filename=filename+"ClusterMatrices"+".mat";
     MATFile *mFile = matOpen(_result_filename.c_str(), "w");
+    if (mFile==nullptr)
+        cout<<"Error creating file "<<_result_filename<<endl;
+    
     for(int i=0; i<_max_order; ++i)
     {
         char i_str [10];
@@ -155,11 +158,10 @@ void cSpinCluster::saveMatrix(string coordname)
         string idx_str = i_str;
         string label = "ClusterIndixMatrixCCE" + idx_str;
         string label1 = "SubClusterIndixMatrixCCE" + idx_str;
-        vector<mat> idx_matices=_grouping->get_index_matrix(i);
-        mat cluster_idx_mat=idx_matices[0];
-        mat subcluster_idx_mat=idx_matices[1];
-        
-        
+
+        mat cluster_idx_mat=_grouping->get_cluster_index_matrix(i);
+        mat subcluster_idx_mat=_grouping->get_sub_cluster_index_matrix(i);
+ 
         size_t nClst = cluster_idx_mat.n_rows;
         size_t max_subcluster_number=subcluster_idx_mat.n_cols;
         
@@ -176,10 +178,8 @@ void cSpinCluster::saveMatrix(string coordname)
         
         mxDestroyArray(pArray);
         mxDestroyArray(pArray1);
+ 
     }
-    
-    
-    
     
 }
 #else
