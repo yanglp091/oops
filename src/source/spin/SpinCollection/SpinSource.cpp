@@ -59,3 +59,54 @@ vector<cSPIN>& cSpinSourceFromFile::generate()
 }
 //}}}
 ////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+//{{{ cSpinSourceFromLattice
+cSpinSourceFromLattice::cSpinSourceFromLattice(const Lattice& lattice,  const imat& range)
+{
+    _lattice = lattice;
+    _lattice.setRange(range);
+}
+
+cSpinSourceFromLattice::cSpinSourceFromLattice(int dim, const vector<vec>& bases, const vector<double>& lattice_const, int atom_num, const vector<vec>& pos, const vector<string>& isotope, const imat& range)
+{
+    _lattice = Lattice(dim, bases, lattice_const, atom_num, pos, isotope); 
+    _lattice.setRange(range);
+}
+
+vector<cSPIN>& cSpinSourceFromLattice::generate()
+{
+    for(int i=0; i<_lattice.getTotalAtomNumber(); ++i)
+    {
+        cSPIN s( _lattice.getCoordinate(i), _lattice.getIsotope(i) );
+        spin_list.push_back(s);
+    }
+    return spin_list;
+}
+//}}}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//{{{ cSpinSourceUniformRandom
+vector<cSPIN>& cSpinSourceUniformRandom::generate()
+{
+    arma_rng::set_seed(_seed);
+    mat coord_mat(3, _max_num, fill::randu);
+
+    vec v(_max_num);
+    for(int i=0; i<_max_num; ++i)
+        v[i]=norm(2.0*_range*coord_mat.col(i) - _range);
+    uvec indices = sort_index(v);
+
+    for(int i=0; i<_num; ++i)
+    {
+        vec coord = 2.0*_range*coord_mat.col( indices[i] ) - _range;
+        cSPIN s(coord, _isotope );
+        spin_list.push_back(s);
+    }
+    return spin_list;
+}
+//}}}
+////////////////////////////////////////////////////////////////////////////////
+

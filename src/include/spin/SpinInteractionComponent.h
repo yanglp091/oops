@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <armadillo>
-#include "include/easylogging++.h"
 #include "include/spin/Spin.h"
 #include "include/spin/SpinInteractionDefine.h"
 #include "include/quantum/PureState.h"
@@ -99,6 +98,15 @@ public:
     ~SingleSpinInteractionForm();
 };
 //}}}
+//----------------------------------------------------------------------------//
+//{{{ SingleSpinDephasing
+class SingleSpinDephasing:public cSpinInteractionForm
+{
+public:
+    SingleSpinDephasing(const cSpinInteractionDomain& domain, const vec& axis);
+    ~SingleSpinDephasing(){};
+};
+//}}}
 ////////////////////////////////////////////////////////////////////////////////
 /// @}
 
@@ -162,6 +170,15 @@ class PolarizationCoeff:public cSpinInteractionCoeff
 public:
     PolarizationCoeff(const cSpinInteractionDomain& domain, const vector<vec>& pol);
     ~PolarizationCoeff();
+};
+//}}}
+//----------------------------------------------------------------------------//
+//{{{ SpinDephasingRate
+class SpinDephasingRate:public cSpinInteractionCoeff
+{
+public:
+    SpinDephasingRate(const cSpinInteractionDomain& domain, const double dephasing_rate);
+    ~SpinDephasingRate() {};
 };
 //}}}
 ////////////////////////////////////////////////////////////////////////////////
